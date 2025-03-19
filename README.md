@@ -1,5 +1,4 @@
-# TFE-DevOps-Kubernetes
-## Introduction
+# 📖 Description du projet
 Le domaine de l'informatique moderne exige de plus en plus de pratiques efficaces pour gérer et déployer des applications à grande échelle. Dans ce cadre, les méthodologies DevOps jouent un rôle essentiel en permettant d'automatiser les processus de développement, de déploiement et de gestion des infrastructures. Le DevOps permet ainsi de réduire les délais de livraison des logiciels tout en augmentant leur fiabilité grâce à l'intégration continue (CI) et à la livraison continue (CD).
 
 Le projet de Travail de Fin d'Études (TFE) s'inscrit dans cette dynamique, avec pour objectif de concevoir et déployer une application complète en utilisant des outils DevOps modernes. L'application choisie pour ce projet est une application web, comprenant un frontend, un backend, et une base de données, le tout conteneurisé et déployé dans un environnement cloud via Kubernetes.
@@ -14,3 +13,7 @@ Suivi et surveillance des performances des services avec Grafana et Prometheus, 
 L'utilisation de SonarQube sera également intégrée dans le pipeline pour effectuer une analyse continue de la qualité du code, afin de s'assurer que l'application respecte les bonnes pratiques de développement et de sécurité. Enfin, l'infrastructure nécessaire à ce projet sera provisionnée et gérée avec Terraform et Ansible, des outils d'automatisation d'infrastructure, permettant de déployer et de configurer facilement des ressources cloud.
 
 L'objectif principal de ce projet est donc de démontrer l'intégration et l'automatisation des pratiques DevOps à travers un pipeline complet, en utilisant des outils et des technologies modernes comme Kubernetes, Docker, Jenkins, Selenium, et Terraform, afin de créer une chaîne de développement et de déploiement robuste, fiable et évolutive.
+
+## 🚀 Comment l’installer et le lancer
+## 🔧 Stack technologique utilisée
+## 📜 Contribution 
