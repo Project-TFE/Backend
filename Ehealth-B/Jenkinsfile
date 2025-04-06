@@ -1,0 +1,85 @@
+pipeline {
+    agent {label 'Agent'}
+
+    tools {
+        maven "MAVEN"
+    }
+
+    environment {
+        ARTIFACT_NAME = 'Ehealth-B-0.0.1-SNAPSHOT.jar'
+        ARTIFACT_PATH = 'Backend/Ehealth-B/target'
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Build Start'
+                checkout scmGit(
+                    branches: [[name: '*/ciPipeline']],
+                    extensions: [],
+                    userRemoteConfigs: [[
+                        credentialsId: '72145410-c633-4919-8bdd-f5ad0b33e759',
+                        url: 'https://github.com/E-Health-Organization/E-health-Backend.git'
+                    ]]
+                )
+                sh 'cd Backend/Ehealth-B && mvn -B -DskipTests clean package'
+                echo 'Build Finished'
+            }
+        }
+
+        stage('Checkstyle') {
+            steps {
+                sh 'cd Backend/Ehealth-B && mvn checkstyle:checkstyle'
+            }
+        }
+
+        stage('PMD') {
+            steps {
+                sh 'cd Backend/Ehealth-B && mvn pmd:pmd'
+            }
+        }
+
+        stage('FindBug') {
+            steps {
+                sh 'cd Backend/Ehealth-B && mvn spotbugs:spotbugs'
+            }
+        }
+
+        stage('Copy Artifact to Another Repo') {
+            steps {
+                script {
+                    echo 'Cleaning previous target-repo if exists....'
+                    sh 'rm -rf target-repo'
+
+                    echo 'Cloning the target repository...'
+                    sh 'git clone https://github.com/E-Health-Organization/Artifact_Ehealth_Backend.git target-repo'
+
+                    echo 'Copying artifact...'
+                    sh '''
+                        cp ${ARTIFACT_PATH}/${ARTIFACT_NAME} target-repo/
+                        cd target-repo
+                        git config user.email "aymar.hakizimana@gmail.com"
+                        git config user.name "HaAymar"
+                        git add ${ARTIFACT_NAME}
+                        git commit -m "Adding new build artifact"
+                    '''
+
+                    echo 'Artifact copied successfully!'
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            // Générer un rapport Checkstyle dans Jenkins après chaque build
+            recordIssues(tools: [checkStyle(pattern: 'Backend/Ehealth-B/target/checkstyle-result.xml')])
+
+            // Générer un rapport FindBugs dans Jenkins après chaque build
+            recordIssues(tools: [spotBugs(pattern: 'Backend/Ehealth-B/target/spotbugsXml.xml')])
+
+            // Générer un rapport PMD dans Jenkins après chaque build
+            recordIssues(tools: [pmdParser(pattern: 'Backend/Ehealth-B/target/pmd.xml')])
+        }
+    }
+}
