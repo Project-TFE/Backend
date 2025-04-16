@@ -22,40 +22,22 @@ pipeline {
             }
         }
 
-        stage('Build Docker Image Backend') {
+        stage('Analyse statique') {
             steps {
-                script {
-                    docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest")
+                dir('Backend/Ehealth-B') {
+                    echo 'Démarrage de l\'analyse statique avec Maven'
+                    sh 'mvn clean verify'
+                    echo 'Analyse statique terminée'
                 }
             }
         }
 
-        stage('Run Static Analysis') {
+        stage('Build & Push Docker Image Backend') {
             steps {
                 script {
-                    // Exécuter le conteneur en arrière-plan
-                    sh 'docker run --name backend-analysis -d ${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest'
-
-                    // Attendre que le conteneur termine l'analyse (ajustez le temps si nécessaire)
-                    sh 'sleep 30'
-
-                    // Copier les rapports depuis le conteneur vers l'hôte Jenkins
-                    sh 'docker cp backend-analysis:/Ehealth/target/checkstyle-result.xml ./checkstyle-result.xml'
-                    sh 'docker cp backend-analysis:/Ehealth/target/pmd.xml ./pmd.xml'
-                    sh 'docker cp backend-analysis:/Ehealth/target/spotbugsXml.xml ./spotbugsXml.xml'
-
-                    // Arrêter et supprimer le conteneur
-                    sh 'docker stop backend-analysis'
-                    sh 'docker rm backend-analysis'
-                }
-            }
-        }
-
-        stage('Push Docker Image Backend') {
-            steps {
-                script {
+                    def image = docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest", 'Ehealth')
                     docker.withRegistry("https://${DOCKER_REGISTRY}/v1/", 'docker-credentials') {
-                        docker.image("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest").push()
+                        image.push()
                     }
                 }
             }
@@ -66,7 +48,6 @@ pipeline {
                 dir('DB') {
                     script {
                         def image = docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_DB}:latest")
-
                         docker.withRegistry("https://${DOCKER_REGISTRY}/v1/", 'docker-credentials') {
                             image.push()
                         }
@@ -79,9 +60,10 @@ pipeline {
     post {
         always {
             recordIssues tools: [
-                checkStyle(pattern: 'checkstyle-result.xml'),
-                pmdParser(pattern: 'pmd.xml'),
-                spotBugs(pattern: 'spotbugsXml.xml')
+                // checkStyle(pattern: 'Ehealth/target/checkstyle-result.xml'),
+                recordIssues(tools: [checkStyle(pattern: 'Ehealth/target/checkstyle-result.xml')])
+                // pmdParser(pattern: 'Backend/Ehealth-B/target/pmd.xml'),
+                // spotBugs(pattern: 'Backend/Ehealth-B/target/spotbugsXml.xml')
             ]
         }
     }
