@@ -22,15 +22,23 @@ pipeline {
             }
         }
 
-        // stage('Analyse statique') {
-        //     steps {
-        //         dir('Backend/Ehealth-B') {
-        //             echo 'Démarrage de l\'analyse statique avec Maven'
-        //             sh 'mvn clean verify'
-        //             echo 'Analyse statique terminée'
-        //         }
-        //     }
-        // }
+        stage('Code Quality') {
+            steps {
+                dir('Backend/Ehealth-B') {
+                    echo 'Démarrage de l\'analyse statique avec Checkstyle et PMD'
+                    sh 'mvn checkstyle:checkstyle pmd:pmd'
+                    echo 'Analyse statique terminée'
+                }
+            }
+            post {
+                always {
+                    recordIssues tools: [
+                        checkStyle(pattern: 'Backend/Ehealth-B/target/checkstyle-result.xml'),
+                        pmdParser(pattern: 'Backend/Ehealth-B/target/pmd.xml')
+                    ]
+                }
+            }
+        }
 
         stage('Build & Push Docker Image Backend') {
             steps {
@@ -60,9 +68,9 @@ pipeline {
     post {
         always {
             recordIssues tools: [
-                checkStyle(pattern: 'target/checkstyle-result.xml'),
-                pmdParser(pattern: 'target/pmd.xml'),
-                spotBugs(pattern: 'target/spotbugsXml.xml')
+                checkStyle(pattern: '**/checkstyle-result.xml'),
+                pmdParser(pattern: '**/pmd.xml'),
+                spotBugs(pattern: '**/spotbugsXml.xml')
             ]
         }
     }
