@@ -43,7 +43,7 @@ pipeline {
         stage('Build & Push Docker Image Backend') {
             steps {
                 script {
-                    def image = docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest", 'Backend/Ehealth-B')
+                    def image = docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest")
                     docker.withRegistry("https://${DOCKER_REGISTRY}/v1/", 'docker-credentials') {
                         image.push()
                     }
