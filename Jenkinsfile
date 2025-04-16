@@ -11,13 +11,14 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout([$class: 'GitSCM',
+                checkout scmGit(
                     branches: [[name: '*/main']],
+                    extensions: [],
                     userRemoteConfigs: [[
-                        url: 'https://github.com/Project-TFE/Backend.git',
-                        credentialsId: '30989c36-de19-497a-b96e-17aa4b90c235'
+                        credentialsId: '30989c36-de19-497a-b96e-17aa4b90c235',
+                        url: 'https://github.com/Project-TFE/Backend.git'
                     ]]
-                ])
+                )
             }
         }
 
