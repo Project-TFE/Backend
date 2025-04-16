@@ -51,12 +51,12 @@ pipeline {
 
     post {
         always {
-            recordIssues tools: [
+            
                 // checkStyle(pattern: 'Backend/Ehealth-B/target/checkstyle-result.xml'),
                 // pmdParser(pattern: 'Backend/Ehealth-B/target/pmd.xml'),
                 // spotBugs(pattern: 'Backend/Ehealth-B/target/spotbugsXml.xml')
-                recordIssues(tools: [checkStyle(pattern: '/target/checkstyle-result.xml')])
-            ]
+                recordIssues tools: [checkStyle(pattern: 'target/checkstyle-result.xml')]
+           
         }
     }
 }
