@@ -22,13 +22,40 @@ pipeline {
             }
         }
 
-        stage('Build & Push Docker Image Backend') {
+        stage('Build Docker Image Backend') {
             steps {
                 script {
-                    def image = docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest")
+                    docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest")
+                }
+            }
+        }
 
+        stage('Run Static Analysis') {
+            steps {
+                script {
+                    // Exécuter le conteneur en arrière-plan
+                    sh 'docker run --name backend-analysis -d ${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest'
+
+                    // Attendre que le conteneur termine l'analyse (ajustez le temps si nécessaire)
+                    sh 'sleep 30'
+
+                    // Copier les rapports depuis le conteneur vers l'hôte Jenkins
+                    sh 'docker cp backend-analysis:/Ehealth/target/checkstyle-result.xml ./checkstyle-result.xml'
+                    sh 'docker cp backend-analysis:/Ehealth/target/pmd.xml ./pmd.xml'
+                    sh 'docker cp backend-analysis:/Ehealth/target/spotbugsXml.xml ./spotbugsXml.xml'
+
+                    // Arrêter et supprimer le conteneur
+                    sh 'docker stop backend-analysis'
+                    sh 'docker rm backend-analysis'
+                }
+            }
+        }
+
+        stage('Push Docker Image Backend') {
+            steps {
+                script {
                     docker.withRegistry("https://${DOCKER_REGISTRY}/v1/", 'docker-credentials') {
-                        image.push()
+                        docker.image("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest").push()
                     }
                 }
             }
@@ -52,9 +79,9 @@ pipeline {
     post {
         always {
             recordIssues tools: [
-                checkStyle(pattern: 'Ehealth/target/checkstyle-result.xml'),
-                pmdParser(pattern: 'Ehealth/target/pmd.xml'),
-                spotBugs(pattern: 'Ehealth/target/spotbugsXml.xml')
+                checkStyle(pattern: 'checkstyle-result.xml'),
+                pmdParser(pattern: 'pmd.xml'),
+                spotBugs(pattern: 'spotbugsXml.xml')
             ]
         }
     }
