@@ -24,7 +24,7 @@ pipeline {
 
         stage('Analyse statique') {
             steps {
-                dir('Backend/Ehealth-B') {
+                dir('Ehealth') {
                     echo 'Démarrage de l\'analyse statique avec Maven'
                     sh 'mvn clean verify'
                     echo 'Analyse statique terminée'
