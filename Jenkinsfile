@@ -48,4 +48,14 @@ pipeline {
             }
         }
     }
+
+    post {
+        always {
+            recordIssues tools: [
+                checkStyle(pattern: 'Ehealth/target/checkstyle-result.xml'),
+                pmdParser(pattern: 'Ehealth/target/pmd.xml'),
+                spotBugs(pattern: 'Ehealth/target/spotbugsXml.xml')
+            ]
+        }
+    }
 }
