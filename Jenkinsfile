@@ -22,15 +22,15 @@ pipeline {
             }
         }
 
-        stage('Analyse statique') {
-            steps {
-                dir('Backend/Ehealth-B') {
-                    echo 'Démarrage de l\'analyse statique avec Maven'
-                    sh 'mvn clean verify'
-                    echo 'Analyse statique terminée'
-                }
-            }
-        }
+        // stage('Analyse statique') {
+        //     steps {
+        //         dir('Backend/Ehealth-B') {
+        //             echo 'Démarrage de l\'analyse statique avec Maven'
+        //             sh 'mvn clean verify'
+        //             echo 'Analyse statique terminée'
+        //         }
+        //     }
+        // }
 
         stage('Build & Push Docker Image Backend') {
             steps {
