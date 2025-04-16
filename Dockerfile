@@ -3,6 +3,7 @@ WORKDIR /Ehealth
 COPY Ehealth/pom.xml .
 COPY Ehealth/src ./src
 RUN mvn clean package -DskipTests
+RUN mvn clean verify
 
 FROM openjdk:17-jdk-slim
 WORKDIR /Ehealth
