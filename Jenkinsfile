@@ -22,11 +22,20 @@ pipeline {
             }
         }
 
+        stage('Analyse statique') {
+            steps {
+                dir('Backend/Ehealth-B') {
+                    echo 'Démarrage de l\'analyse statique avec Maven'
+                    sh 'mvn clean verify'
+                    echo 'Analyse statique terminée'
+                }
+            }
+        }
+
         stage('Build & Push Docker Image Backend') {
             steps {
                 script {
-                    def image = docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest")
-
+                    def image = docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest", 'Backend/Ehealth-B')
                     docker.withRegistry("https://${DOCKER_REGISTRY}/v1/", 'docker-credentials') {
                         image.push()
                     }
@@ -39,7 +48,6 @@ pipeline {
                 dir('DB') {
                     script {
                         def image = docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_DB}:latest")
-
                         docker.withRegistry("https://${DOCKER_REGISTRY}/v1/", 'docker-credentials') {
                             image.push()
                         }
@@ -51,12 +59,11 @@ pipeline {
 
     post {
         always {
-            
-                // checkStyle(pattern: 'Backend/Ehealth-B/target/checkstyle-result.xml'),
-                // pmdParser(pattern: 'Backend/Ehealth-B/target/pmd.xml'),
-                // spotBugs(pattern: 'Backend/Ehealth-B/target/spotbugsXml.xml')
-                recordIssues tools: [checkStyle(pattern: 'target/checkstyle-result.xml')]
-           
+            recordIssues tools: [
+                checkStyle(pattern: 'target/checkstyle-result.xml'),
+                pmdParser(pattern: 'target/pmd.xml'),
+                spotBugs(pattern: 'target/spotbugsXml.xml')
+            ]
         }
     }
 }
