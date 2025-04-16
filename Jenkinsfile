@@ -24,7 +24,7 @@ pipeline {
 
         stage('Code Quality') {
             steps {
-                dir('Backend/Ehealth-B') {
+                dir('Ehealth') {
                     echo 'Démarrage de l\'analyse statique avec Checkstyle et PMD'
                     sh 'mvn checkstyle:checkstyle pmd:pmd'
                     echo 'Analyse statique terminée'
@@ -33,8 +33,8 @@ pipeline {
             post {
                 always {
                     recordIssues tools: [
-                        checkStyle(pattern: 'Backend/Ehealth-B/target/checkstyle-result.xml'),
-                        pmdParser(pattern: 'Backend/Ehealth-B/target/pmd.xml')
+                        checkStyle(pattern: '**/checkstyle-result.xml'),
+                        pmdParser(pattern: '**/pmd.xml')
                     ]
                 }
             }
@@ -62,16 +62,6 @@ pipeline {
                     }
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            recordIssues tools: [
-                checkStyle(pattern: '**/checkstyle-result.xml'),
-                pmdParser(pattern: '**/pmd.xml'),
-                spotBugs(pattern: '**/spotbugsXml.xml')
-            ]
         }
     }
 }
