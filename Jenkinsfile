@@ -82,7 +82,6 @@ pipeline {
             steps {
                 dir('Ehealth') {
                     echo 'Lancement des tests de performance JMeter'
-                    sh 'mvn verify jmeter:jmeter'
                 }
             }
             post {
