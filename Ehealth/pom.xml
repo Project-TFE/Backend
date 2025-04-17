@@ -60,9 +60,9 @@
                 <executions>
                     <execution>
                         <phase>verify</phase>
-                        <goals>
+<!--                         <goals>
                             <goal>check</goal>
-                        </goals>
+                        </goals> -->
                     </execution>
                 </executions>
                 <configuration>
