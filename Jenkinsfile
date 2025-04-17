@@ -43,7 +43,7 @@ pipeline {
                 }
             }
         }
-
+// fgvgrt
         stage('SonarQube Analysis') {
             steps {
                 dir('Ehealth') {
