@@ -40,6 +40,16 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                dir('Ehealth') {
+                    withSonarQubeEnv('SonarQube') {
+                        sh 'mvn clean verify sonar:sonar -Psonar'
+                    }
+                }
+            }
+        }
+
         stage('Build & Push Docker Image Backend') {
             steps {
                 script {
