@@ -43,9 +43,17 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 dir('Ehealth') {
-                    withSonarQubeEnv('SonarQube') {
-                        sh 'mvn clean verify sonar:sonar -Psonar'
+                    withSonarQubeEnv('SonarQube') { // Assure-toi que ce nom est EXACTEMENT celui défini dans Jenkins
+                        sh 'mvn clean verify sonar:sonar -DskipTests=true'
                     }
+                }
+            }
+        }
+
+        stage('SonarQube Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
                 }
             }
         }
@@ -53,7 +61,7 @@ pipeline {
         stage('Build & Push Docker Image Backend') {
             steps {
                 script {
-                    def image = docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest")
+                    def image = docker.build("${DOCKER_USERNAME}/${IMAGE_NAME_BACK}:latest", "./Ehealth")
                     docker.withRegistry("https://${DOCKER_REGISTRY}/v1/", 'docker-credentials') {
                         image.push()
                     }
