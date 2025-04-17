@@ -11,7 +11,7 @@ pipeline {
         IMAGE_NAME_BACK = "backend-app"
         IMAGE_NAME_DB = "database-app"
     }
-
+// fbgthbhb
     stages {
         stage('Checkout') {
             steps {
