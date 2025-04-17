@@ -11,7 +11,7 @@ pipeline {
         IMAGE_NAME_BACK = "backend-app"
         IMAGE_NAME_DB = "database-app"
     }
-// fbgthbhb
+
     stages {
         stage('Checkout') {
             steps {
@@ -43,16 +43,17 @@ pipeline {
                 }
             }
         }
-        
+
         stage('SonarQube Analysis') {
             steps {
                 dir('Ehealth') {
-                    withSonarQubeEnv('SonarQube') { // Assure-toi que ce nom est EXACTEMENT celui défini dans Jenkins
+                    withSonarQubeEnv('SonarQube') {
                         sh 'mvn clean verify sonar:sonar -DskipTests=true'
                     }
                 }
             }
         }
+
         stage('Build & Push Docker Image Backend') {
             steps {
                 script {
@@ -73,6 +74,20 @@ pipeline {
                             image.push()
                         }
                     }
+                }
+            }
+        }
+
+        stage('Performance Tests') {
+            steps {
+                dir('backend/Ehealth') {
+                    echo 'Lancement des tests de performance JMeter'
+                    sh 'mvn verify jmeter:jmeter'
+                }
+            }
+            post {
+                always {
+                    perfReport 'backend/Ehealth/target/jmeter/results/*.jtl'
                 }
             }
         }
