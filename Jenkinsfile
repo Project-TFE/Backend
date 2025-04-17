@@ -80,14 +80,14 @@ pipeline {
 
         stage('Performance Tests') {
             steps {
-                dir('backend/Ehealth') {
+                dir('Ehealth') {
                     echo 'Lancement des tests de performance JMeter'
                     sh 'mvn verify jmeter:jmeter'
                 }
             }
             post {
                 always {
-                    perfReport 'backend/Ehealth/target/jmeter/results/*.jtl'
+                    perfReport 'Ehealth/Jmeter/*.jtl'
                 }
             }
         }
