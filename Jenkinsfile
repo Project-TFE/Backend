@@ -1,6 +1,10 @@
 pipeline {
     agent { label 'azure-agent' }
 
+    tools {
+        maven 'MAVEN'
+    }
+
     environment {
         DOCKER_REGISTRY = "index.docker.io"
         DOCKER_USERNAME = "aymar100"
