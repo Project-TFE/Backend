@@ -60,9 +60,6 @@
                 <executions>
                     <execution>
                         <phase>verify</phase>
-<!--                         <goals>
-                            <goal>check</goal>
-                        </goals> -->
                     </execution>
                 </executions>
                 <configuration>
@@ -81,7 +78,7 @@
                     <encoding>UTF-8</encoding>
                     <consoleOutput>true</consoleOutput>
                     <failsOnError>true</failsOnError>
-                    <linkXRef>true</linkXRef> <!-- active les liens XRef -->
+                    <linkXRef>true</linkXRef>
                 </configuration>
             </plugin>
 
@@ -96,7 +93,7 @@
                     <sourceEncoding>UTF-8</sourceEncoding>
                     <minimumTokens>100</minimumTokens>
                     <targetJdk>${java.version}</targetJdk>
-                    <linkXRef>true</linkXRef> <!-- pour corriger le warning -->
+                    <linkXRef>true</linkXRef>
                 </configuration>
             </plugin>
 
@@ -107,7 +104,7 @@
                 <version>3.11.0.3922</version>
             </plugin>
 
-            <!-- Pour générer les fichiers XRef (nécessaire pour PMD & Checkstyle) -->
+            <!-- Site plugin with XRef for reports -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-site-plugin</artifactId>
@@ -122,6 +119,27 @@
                     </reportPlugins>
                 </configuration>
             </plugin>
+
+            <!-- ✅ JMeter Maven Plugin -->
+            <plugin>
+                <groupId>com.lazerycode.jmeter</groupId>
+                <artifactId>jmeter-maven-plugin</artifactId>
+                <version>3.8.0</version>
+                <configuration>
+                    <testFilesDirectory>${project.basedir}/src/test/jmeter</testFilesDirectory>
+                    <resultsDirectory>${project.build.directory}/jmeter/results</resultsDirectory>
+                    <jmeterVersion>5.5</jmeterVersion>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>jmeter-tests</id>
+                        <goals>
+                            <goal>jmeter</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
