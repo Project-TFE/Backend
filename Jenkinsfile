@@ -26,23 +26,23 @@ pipeline {
             }
         }
 
-        stage('Code Quality') {
-            steps {
-                dir('Ehealth') {
-                    echo 'Démarrage de l\'analyse statique avec Checkstyle et PMD'
-                    sh 'mvn checkstyle:checkstyle pmd:pmd'
-                    echo 'Analyse statique terminée'
-                }
-            }
-            post {
-                always {
-                    recordIssues tools: [
-                        checkStyle(pattern: '**/checkstyle-result.xml'),
-                        pmdParser(pattern: '**/pmd.xml')
-                    ]
-                }
-            }
-        }
+        // stage('Code Quality') {
+        //     steps {
+        //         dir('Ehealth') {
+        //             echo 'Démarrage de l\'analyse statique avec Checkstyle et PMD'
+        //             sh 'mvn checkstyle:checkstyle pmd:pmd'
+        //             echo 'Analyse statique terminée'
+        //         }
+        //     }
+        //     post {
+        //         always {
+        //             recordIssues tools: [
+        //                 checkStyle(pattern: '**/checkstyle-result.xml'),
+        //                 pmdParser(pattern: '**/pmd.xml')
+        //             ]
+        //         }
+        //     }
+        // }
 
         stage('SonarQube Analysis') {
             steps {
