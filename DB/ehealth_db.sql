@@ -43,9 +43,9 @@ CREATE TABLE `medecin` (
 --
 
 INSERT INTO `medecin` (`id`, `adresse`, `email`, `nom`, `telephone`, `role`, `password`, `specialite`) VALUES
-(1, '123 Rue de Paris', 'dupont@example.com', 'Dr. Dupont', '0123456789', NULL, NULL, NULL),
-(3, 'Rue jules lahayes 278 boite 50', 'youssef.1090@live.be', 'dede', '0484063972', NULL, NULL, NULL),
-(4, 'berchkem', 'soufian@ulb.be', 'Soufiane', '101', NULL, NULL, NULL);
+(1, '123 Rue de Paris', 'dupont@ecare.be', 'Dupont', '+32 423 456 789', NULL, NULL, NULL),
+(3, 'Rue jules lahayes 278 boite 50', 'divin.morel@live.be', 'Divin', '+32 484 063 972', NULL, NULL, NULL),
+(4, 'Rue de berchkem 15', 'francine@ulb.be', 'Francine', '+31 475 454 121', NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
